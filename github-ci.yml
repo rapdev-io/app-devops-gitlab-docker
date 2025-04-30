@@ -13,15 +13,15 @@ env:
   SNOW_TOKEN: ${{ secrets.SNOW_TOKEN }}
   SNOW_TOOLID: ${{ secrets.SNOW_TOOLID }}
   # These are the optional env variables
-  #CI_PIPELINE_ID: ${{ github.run_id }}
-  #CI_API_V4_URL: ${{ github.server_url }}
-  #CI_JOB_ID: ${{ github.run_id }}
-  #CI_PROJECT_PATH: ${{ github.job }}
-  #CI_REPOSITORY_NAME: ${{ github.repository }}
-  #CI_RUN_ATTEMPT: ${{ github.run_attempt }}
-  #CI_PROJECT_TITLE: ${{ github.repository }}/${{github.workflow}}
-  #CI_COMMIT_BRANCH: ${{ github.ref_name }}
-  #CI_WORKFLOW_NAME: ${{ github.workflow }}
+  #PIPELINE_ID: ${{ github.run_id }}
+  #API_V4_URL: ${{ github.server_url }}
+  #JOB_ID: ${{ github.run_id }}
+  #PROJECT_PATH: ${{ github.job }}
+  #REPOSITORY_NAME: ${{ github.repository }}
+  #RUN_ATTEMPT: ${{ github.run_attempt }}
+  #PROJECT_TITLE: ${{ github.repository }}/${{github.workflow}}
+  #COMMIT_BRANCH: ${{ github.ref_name }}
+  #WORKFLOW_NAME: ${{ github.workflow }}
 
 jobs:
   build:
@@ -35,7 +35,7 @@ jobs:
      runs-on: ubuntu-latest
      needs: build
      container:
-       image: servicenowdocker/sndevops:5.1.0
+       image: servicenowdocker/sndevops:6.0.0
      env:
        CI_JOB_NAME: "ServiceNowDevOpsChange"
 
@@ -48,7 +48,7 @@ jobs:
        runs-on: ubuntu-latest
        needs: ServiceNowDevOpsChange
        container:
-         image: servicenowdocker/sndevops:5.1.0
+         image: servicenowdocker/sndevops:6.0.0
        env:
          CI_JOB_NAME: "ServiceNowDevOpsChange"
   
@@ -61,7 +61,7 @@ jobs:
       runs-on: ubuntu-latest
       needs: build
       container:
-        image: servicenowdocker/sndevops:5.1.0
+        image: servicenowdocker/sndevops:6.0.0
       env:
         CI_JOB_NAME: "ArtifactAndPackage"
       steps:
@@ -75,7 +75,7 @@ jobs:
       needs: ArtifactAndPackage
       runs-on: ubuntu-latest
       container:
-        image: servicenowdocker/sndevops:5.1.0
+        image: servicenowdocker/sndevops:6.0.0
       env:
         CI_JOB_NAME: "ServiceNowDevOpsSonarScanResults"
       steps:
@@ -88,7 +88,7 @@ jobs:
       runs-on: ubuntu-latest
       needs: build
       container:
-        image: servicenowdocker/sndevops:5.1.0
+        image: servicenowdocker/sndevops:6.0.0
       steps:
         - name: security scan
           run: |

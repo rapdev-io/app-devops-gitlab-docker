@@ -1,6 +1,16 @@
-# app-devops-gitlab-docker
+# app-devops-gitlab
 
  New repository for developing a plugin to integrate between ITSM DevOps and GitLab pipelines
+
+### Owners
+
+> ramachandrarao.p
+
+### How to build on Jenkins
+* Create a `pom.xml` file at the root level
+* Go to the [BT1 Service Catalog](https://buildtools1.service-now.com/nav_to.do?uri=%2Fcom.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1%26sysparm_id%3D9dbd0c54db1acb403a3d5dd5ce961948%26sysparm_link_parent%3Dad2fecb72bfc310052f7c71317da157e%26sysparm_catalog%3De0d08b13c3330100c8b837659bba8fb4%26sysparm_catalog_view%3Dess%26sysparm_view%3Dess) to request a Jenkins job
+
+Once the request is processed, a multi-branch job is created on https://buildmaster-hotel.devsnc.com and will build any branches that match [ServiceNow branch naming convention](https://buildtools1.service-now.com/kb_view_customer.do?sysparm_article=KB0528607).
 
 # CLI example using npm modules
 
@@ -55,11 +65,11 @@ npm unlink .
 ### Building Docker Image
 
 ```sh
-docker build -t servicenowdocker/sndevops:5.1.0 .
+docker build -t servicenowdocker/sndevops:6.0.0 .
 ```
 
 ```sh
-docker push servicenowdocker/sndevops:5.1.0
+docker push servicenowdocker/sndevops:6.0.0
 ```
 
 ## Integrating with GitLab
@@ -80,19 +90,19 @@ SNOW_TOOLID = <servicenow-tool-id>
 
 ### Additonal Env variables
 ```
-CI_PIPELINE_ID: <pipeline-id>
-CI_API_V4_URL: <pipeline-url>
-CI_JOB_ID: <pipeline-execution-id>
-CI_PROJECT_PATH: <repository-path>
-CI_REPOSITORY_NAME: <repository-name>
-CI_RUN_ATTEMPT: <pipeline-attempt-number>
-CI_PROJECT_TITLE: <pipeline-name>
+PIPELINE_ID: <pipeline-id>
+API_V4_URL: <pipeline-url>
+JOB_ID: <pipeline-execution-id>
+PROJECT_PATH: <repository-path>
+REPOSITORY_NAME: <repository-name>
+RUN_ATTEMPT: <pipeline-attempt-number>
+PROJECT_TITLE: <pipeline-name>
 ```
 
 ### Optional Env variables
 ```
-CI_COMMIT_BRANCH: <commit-branch>
-CI_WORKFLOW_NAME: <workflow-name>
+COMMIT_BRANCH: <commit-branch>
+WORKFLOW_NAME: <workflow-name>
 ```
 
 **Example with passing all ServiceNow information via commandline**
@@ -105,10 +115,10 @@ stages:
 
 package:
   stage: package
-  image: servicenowdocker/sndevops:5.1.0
+  image: servicenowdocker/sndevops:6.0.0
   script: 
-    - sndevopscli create artifact -a '[{"name":"artifact-name-$CI_JOB_ID","repositoryName":"artifact-repo-name" ,"version":"1.3.0"}]'
-    - sndevopscli create package -n "package-name" -a '[{"name":"artifact-name-$CI_JOB_ID","repositoryName":"artifact-repo-name" ,"version":"1.3.0"}]
+    - sndevopscli create artifact -a '[{"name":"artifact-name","repositoryName":"artifact-repo-name" ,"version":"1.3.0"}]'
+    - sndevopscli create package -n "package-name" -a '[{"name":"artifact-name","repositoryName":"artifact-repo-name" ,"version":"1.3.0"}]
 
 OR
 
@@ -117,10 +127,10 @@ stages:
 
 package:
   stage: package
-  image: servicenowdocker/sndevops:5.1.0
+  image: servicenowdocker/sndevops:6.0.0
   script: 
-    - sndevopscli create artifact -u <serviceno-url> -t <tool-id> --token <tool-token> -a '[{"name":"artifact-name-$CI_JOB_ID","repositoryName":"artifact-repo-name" ,"version":"1.3.0"}]'
-    - sndevopscli create package -u <serviceno-url> -t <tool-id> --token <tool-token> -n "package-mame" -a '[{"name":"artifact-name-$CI_JOB_ID","repositoryName":"artifact-repo-name" ,"version":"1.3.0"}]
+    - sndevopscli create artifact -u <servicenow-url> -t <tool-id> --token <tool-token> -a '[{"name":"artifact-name","repositoryName":"artifact-repo-name" ,"version":"1.3.0"}]'
+    - sndevopscli create package -u <servicenow-url> -t <tool-id> --token <tool-token> -n "package-mame" -a '[{"name":"artifact-name","repositoryName":"artifact-repo-name" ,"version":"1.3.0"}]
 
  -a : [mandatory]
  This specifies artifact details.
@@ -141,7 +151,7 @@ stages:
 
 ServiceNow DevOps Change:
   stage: DevOpsChangeApproval
-  image: servicenowdocker/sndevops:5.1.0
+  image: servicenowdocker/sndevops:6.0.0
   script: 
     - sndevopscli create change -p '{"changeStepDetails":{"timeout":3600,"interval":100},"attributes":{"short_description":"Automated Software Deployment","description":"Automated Software Deployment.","assignment_group":"XXXXXXX","implementation_plan":"Software update is tested and results can be found in Test Summaries Tab.","backout_plan":"When software fails in production, the previous software release will be re-deployed.","test_plan":"Testing if the software was successfully deployed or not"}}'
 
@@ -181,7 +191,7 @@ stages:
 
 ServiceNow DevOps Sonar Scan Results:
   stage: DevOpsSonarStage
-  image: servicenowdocker/sndevops:5.1.0
+  image: servicenowdocker/sndevops:6.0.0
   script: 
     - sndevopscli create sonar -url 'https://sonarcloud.io' -projectKey 'xxxxxxx' -branch 'master'
 
@@ -192,7 +202,7 @@ projectKey: [mandatory]
 This specifies the sonar project key.
 
 branch: [optional]
-This specifies the branch on which the Sonar scan was executed. By default, it matches the branch for which the build was run. Note, for Harness, the branch option is required if CI_COMMIT_BRANCH is not provided.
+This specifies the branch on which the Sonar scan was executed. By default, it matches the branch for which the build was run. Note, for Harness, the branch option is required if COMMIT_BRANCH is not provided.
 
 ```
 
@@ -206,15 +216,15 @@ stages:
 
 ServiceNow DevOps Security Scan Results:
   stage: DevOpsSecurityScanStage
-  image: servicenowdocker/sndevops:5.1.0
+  image: servicenowdocker/sndevops:6.0.0
   script: 
-    - sndevopscli create securityScan -p "{\"pipelineInfo\":{\"buildNumber\":\"${CI_PIPELINE_ID}\",\"pipelineExecutionUrl\":\"${CI_PIPELINE_URL}\" },\"securityResultAttributes\":{ \"scanner\":\"Veracode\",\"applicationName\":\"PetStoreAPI-Github\",\"buildVersion\":\"\",\"securityToolId\":\"\"}}"
+    - sndevopscli create securityScan -p "{\"pipelineInfo\":{\"buildNumber\":\"buildNumber\",\"pipelineExecutionUrl\":\"pipelineExecutionUrl\" },\"securityResultAttributes\":{ \"scanner\":\"Veracode\",\"applicationName\":\"PetStoreAPI-Github\",\"buildVersion\":\"\",\"securityToolId\":\"\"}}"
 
 
 -p: [mandatory]
  It the payload of security result attributes. The payload will have attributes as follows:
-  buildNumber: CI_PIPELINE_ID (mandatory)
-  pipelineExecutionUrl: CI_PIPELINE_URL (mandatory)
+  buildNumber: This specifies ID of the Job (mandatory)
+  pipelineExecutionUrl: This specifies the pipeline execution URL (mandatory)
   scanner: Scanning tool and is required e.g. Checkmarx One.
   projectName/projectId: Name/Id of your Checkmarx One project and is required. This attribute is applicable only for Checkmarx One.
   applicationName: Name of your Veracode application and is required. This attribute is applicable only for Veracode.
@@ -234,11 +244,11 @@ stages:
 
 ServiceNow DevOps Get Change:
   stage: DevOpsGetChange
-  image: servicenowdocker/sndevops:5.1.0
+  image: servicenowdocker/sndevops:6.0.0
   script: 
-    - sndevopscli get change -p "{\"buildNumber\":${CHG_JOB_ID},\"stageName\":\"ServiceNow DevOps Change Step\",\"pipelineName\":\"GitlabDockerGetAndUpdateChange\"}"
+    - sndevopscli get change -p "{\"buildNumber\":\"buildNumber\",\"stageName\":\"ServiceNow DevOps Change Step\",\"pipelineName\":\"GitlabDockerGetAndUpdateChange\"}"
 
--p: It stands for changeDetails. The change details to be used for identifying change request in ServiceNow instance. The change details is a JSON object surrounded by curly braces {} containing key-value pair separated by a comma ,. A key-value pair consists of a key and a value separated by a colon :. The keys supported in key-value pair are buildNumber, pipelineName, stageName
+-p: It stands for changeDetails. The change details to be used for identifying change request in ServiceNow instance. The change details is a JSON object surrounded by curly braces {} containing key-value pair separated by a comma ,. A key-value pair consists of a key and a value separated by a colon :. The keys supported in key-value pair are buildNumber, pipelineName, stageName. All fields in the Change Request table are supported except risk, impact and risk_impact_analysis. For more information, [see documentation](https://docs.servicenow.com/bundle/vancouver-it-service-management/page/product/enterprise-dev-ops/concept/dev-ops-config-change-details.html).
 
 buildNumber: [mandatory]
 This specifies ID of the Job where we have created change request.
@@ -270,7 +280,7 @@ stages:
 
 ServiceNow DevOps Update Change:
   stage: DevOpsUpdateChangeStage
-  image: servicenowdocker/sndevops:5.1.0
+  image: servicenowdocker/sndevops:6.0.0
   script: 
     - sndevopscli update change -n 'CHGXXXXXX' -p "{\"short_description\":\"Automated Software Deployment\",\"description\":\"Automated Software Deployment.\",\"assignment_group\":\"XXXXX\",\"implementation_plan\":\"Software update is tested and results can be found in Test Summaries Tab.\",\"backout_plan\":\"When software fails in production, the previous software release will be re-deployed.\",\"test_plan\":\"Testing if the software was successfully deployed or not\"}"
 
@@ -297,7 +307,7 @@ stages:
 
 ServiceNow DevOps Change Step:
   stage: changeapproval
-  image: servicenowdocker/sndevops:5.1.0
+  image: servicenowdocker/sndevops:6.0.0
   script: 
      - sndevopscli create change -p "{\"changeStepDetails\":{\"timeout\":3600,\"interval\":100},\"autoCloseChange\":true,\"attributes\":{\"short_description\":\"Automated Software Deployment\",\"description\":\"Automated Software Deployment.\",\"assignment_group\":\"xxxxxxxx\",\"implementation_plan\":\"Software update is tested and results can be found in Test Summaries Tab.\",\"backout_plan\":\"When software fails in production, the previous software release will be re-deployed.\",\"test_plan\":\"Testing if the software was successfully deployed or not\"}}"
   
