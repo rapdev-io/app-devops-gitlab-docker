@@ -45,14 +45,14 @@ pipeline:
                   identifier: Sonar_container
                   spec:
                     connectorRef: docker_connector # harness docker connector
-                    image: servicenowdocker/sndevops:5.1.0
+                    image: servicenowdocker/sndevops:6.0.0
                     command: |-
                       export SNOW_URL="<+variable.SNOW_URL>"
                       export SNOW_TOOLID="<+variable.SNOW_TOOLID>"
                       export SNOW_TOKEN="<+variable.SNOW_TOKEN>"
                       export HARNESS_STAGE_NAME="<+stage.identifier>"
                       export HARNESS_PIPELINE_NAME="<+org.identifier>/<+project.identifier>/<+pipeline.name>"
-                      export CI_COMMIT_BRANCH="main"
+                      export COMMIT_BRANCH="main"
                       sndevopscli create sonar -url 'https://sonarcloud.io' -projectKey 'SONAR_PROJECT_KEY' -branch "main"
                     shell: Sh
                     infrastructure:
@@ -93,7 +93,7 @@ pipeline:
                   identifier: security
                   spec:
                     connectorRef: docker_connector # harness docker connector
-                    image: servicenowdocker/sndevops:5.1.0
+                    image: servicenowdocker/sndevops:6.0.0
                     command: |-
                       export SNOW_URL="<+variable.SNOW_URL>"
                       export SNOW_TOOLID="<+variable.SNOW_TOOLID>"
@@ -156,7 +156,7 @@ pipeline:
                   identifier: ServiceNow_change
                   spec:
                     connectorRef: docker_connector # harness docker connector
-                    image: servicenowdocker/sndevops:5.1.0
+                    image: servicenowdocker/sndevops:6.0.0
                     command: |-
                       # set mandetory variables. These can be set from Environment variable section of Optional configuration as well.
                       export HARNESS_STAGE_NAME="<+stage.identifier>"

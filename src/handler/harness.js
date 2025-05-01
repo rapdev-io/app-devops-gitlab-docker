@@ -25,7 +25,7 @@ class HarnessIntegrationHandler extends AbstractToolIntegrationHandler {
   }
 
   getBranch () {
-    return process.env.CI_COMMIT_BRANCH
+    return process.env.COMMIT_BRANCH
   }
 
   getProjectTitle () {
@@ -47,7 +47,7 @@ class HarnessIntegrationHandler extends AbstractToolIntegrationHandler {
   getCallbackURL (){
     const HARNESS_DEFAULT_URL = 'https://app.harness.io/';
     const harnessPipelineExecutionUrl = `${HARNESS_DEFAULT_URL}/ng/#/account/${process.env.HARNESS_ACCOUNT_ID}/ci/orgs/${process.env.HARNESS_ORG_ID}/projects/${process.env.HARNESS_PROJECT_ID}/pipeline/${process.env.HARNESS_PIPELINE_ID}/executions/${process.env.HARNESS_EXECUTION_ID}`;
-    return process.env.CI_CALLBACK_URL || harnessPipelineExecutionUrl;
+    return process.env.CALLBACK_URL || harnessPipelineExecutionUrl;
   }
 
   getPipelineName (pipelineName) {
