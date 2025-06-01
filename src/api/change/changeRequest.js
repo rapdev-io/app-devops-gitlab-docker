@@ -167,8 +167,10 @@ class ChangeRequestManager extends SnDevopsApi {
             if (status) {
                 var result = response.data.result;
                 if (result && result.status == "Success") {
-                    if (result.changeControl === false)
+                    if (result.changeControl === false) {
                         console.log('\n     \x1b[1m\x1b[36m' + "Change control is not enabled on the pipeline stage" + '\x1b[0m\x1b[0m');
+                        status = false;
+                    }
                     else if (result.message)
                         console.log('\n     \x1b[1m\x1b[36m' + result.message + '\x1b[0m\x1b[0m');
                     else
