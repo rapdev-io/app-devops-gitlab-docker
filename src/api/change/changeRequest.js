@@ -76,7 +76,7 @@ class ChangeRequestManager extends SnDevopsApi {
             }
 
             let payload = this._getRequestBodyForChangeCreation(changePayload, pipelineContext);
-            response = await this.createChangeNotification(payload);
+            status = await this.createChangeNotification(payload);
             if (status) {
                 interval = interval >= 100 ? interval : 100;
                 timeout = timeout >= 100 ? timeout : 3600;
@@ -168,11 +168,18 @@ class ChangeRequestManager extends SnDevopsApi {
                 var result = response.data.result;
                 if (result && result.status == "Success") {
                     if (result.changeControl === false) {
-                        console.log('\n     \x1b[1m\x1b[36m' + "Change control is not enabled on the pipeline stage" + '\x1b[0m\x1b[0m');
+                        if(changePayload.deploymentGateDetails) {
+                            console.log('\n     \x1b[1m\x1b[36m' + "A callback request is created for the job specified" + '\x1b[0m\x1b[0m');
+                        }
+                        else {
+                            console.log('\n     \x1b[1m\x1b[36m' + "Change control is not enabled on the pipeline stage" + '\x1b[0m\x1b[0m');
+                        }
                         status = false;
                     }
-                    else if (result.message)
+                    else if (result.message) {
                         console.log('\n     \x1b[1m\x1b[36m' + result.message + '\x1b[0m\x1b[0m');
+                        status = false;
+                    }
                     else
                         console.log('\n     \x1b[1m\x1b[36m' + "The job is under change control. A callback request is created and polling has been started to retrieve the change info." + '\x1b[0m\x1b[0m');
                 }
@@ -180,6 +187,8 @@ class ChangeRequestManager extends SnDevopsApi {
         } catch (error) {
             throw new Error(error.message);
         }
+
+        return status;
     }
 
     async tryFetch(start, interval, timeout, prevPollChangeDetails, changePayload) {
@@ -410,6 +419,10 @@ class ChangeRequestManager extends SnDevopsApi {
                   payload[key] = parsedChangeParams[key];
                }
             }
+        }
+
+        if (changePayload.changeRequestDetails && changePayload.changeRequestDetails.deploymentGateDetails) {
+            payload.deploymentGateDetails = changePayload.changeRequestDetails.deploymentGateDetails;
         }
         return payload;
     }
