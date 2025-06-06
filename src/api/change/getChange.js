@@ -45,7 +45,7 @@ class GetChangeManager extends SnDevopsApi {
             }
 
             try {
-                buildNumber = buildNumber || BaseEnv.CI_JOB_ID;
+                buildNumber = buildNumber || BaseEnv.CI_PIPELINE_ID;
                 stageName = stageName || BaseEnv.CI_JOB_NAME;
                 pipelineName = pipelineName || BaseEnv.CI_PROJECT_TITLE;
                 gitLabProjectId = BaseEnv.CI_PROJECT_ID;

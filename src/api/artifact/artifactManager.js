@@ -71,7 +71,7 @@ class ArtifactManager extends SnDevopsApi {
     _getRequestBodyForArtifactRegistration(artifacts) {
 
         let requestPayload = {
-            "taskExecutionNumber": BaseEnv.CI_JOB_ID,
+            "taskExecutionNumber": BaseEnv.CI_PIPELINE_ID,
             "pipelineName": BaseEnv.CI_PROJECT_TITLE,
             "stageName": BaseEnv.CI_JOB_NAME,
             "artifacts": artifacts

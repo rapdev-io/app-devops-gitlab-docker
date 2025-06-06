@@ -75,7 +75,7 @@ class PackageManager extends SnDevopsApi {
             "artifacts": artifacts,
             "pipelineName": BaseEnv.CI_PROJECT_TITLE,
             "stageName": BaseEnv.CI_JOB_NAME,
-            "taskExecutionNumber": BaseEnv.CI_JOB_ID,
+            "taskExecutionNumber": BaseEnv.CI_PIPELINE_ID,
             "branchName": branchName
         };
         if(BaseEnv.CI_PROJECT_ID) {

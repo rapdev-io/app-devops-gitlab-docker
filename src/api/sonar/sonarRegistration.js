@@ -90,7 +90,7 @@ class SonarRegistrationManager extends SnDevopsApi {
             "repositoryName": BaseEnv.CI_REPOSITORY_NAME,
             "repository": BaseEnv.CI_REPOSITORY_NAME,
             "pipelineName": BaseEnv.CI_PROJECT_TITLE,
-            "buildNumber": BaseEnv.CI_JOB_ID,
+            "buildNumber": BaseEnv.CI_PIPELINE_ID,
             "stageName": BaseEnv.CI_JOB_NAME,
             "branchName": branchName,
             "toolId": this.toolId

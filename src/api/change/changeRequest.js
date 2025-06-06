@@ -253,7 +253,7 @@ class ChangeRequestManager extends SnDevopsApi {
         let url = new URL(API_CHANGE_STATUS_PATH, this.url);
         url.searchParams.append("toolId", this.toolId);
         url.searchParams.append("stageName", changePayload.stageName);
-        url.searchParams.append("buildNumber", changePayload.jobId);
+        url.searchParams.append("buildNumber", changePayload.buildNumber);
         url.searchParams.append("pipelineName", this.buildPipelineName(changePayload.pipelineName));
         url.searchParams.append("pipelineId", changePayload.gitLabProjectId);
         if(changePayload.attemptNumber)
