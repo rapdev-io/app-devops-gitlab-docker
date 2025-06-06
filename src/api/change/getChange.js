@@ -74,6 +74,7 @@ class GetChangeManager extends SnDevopsApi {
                     console.log('\n \x1b[1m\x1b[32m' + "changeRequestNumber => " + response.data.result.number + '\x1b[0m\x1b[0m');
                     outputObject.changeRequestNumber = response.data.result.number;
                     outputObject.status = status;
+                    outputObject.changeDetails = response.data.result;
                     this._writeToOutputFile(outputObject);
                     return outputObject;
                 } else {
