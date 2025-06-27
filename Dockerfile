@@ -41,6 +41,8 @@ RUN npm link
 
 ## https://engineeringblog.yelp.com/2016/01/dumb-init-an-init-for-docker.html
 # RUN apk add --no-cache dumb-init
+RUN apk add --no-cache jq
+RUN apk add --no-cache libxml2-utils
 # RUN npm link
 # RUN chmod +x sndevopscli.js
 ## Dropping privileges
